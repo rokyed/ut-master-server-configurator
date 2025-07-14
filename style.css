@@ -65,6 +65,7 @@ pre {
   padding: 1em;
   overflow: auto;
   border: 1px solid var(--border-color);
+  font-family: monospace;
 }
 
 button,
@@ -124,4 +125,38 @@ button:hover,
 
 #folder-feedback.error {
   color: red;
+}
+
+/* Two-column layout */
+.columns {
+  display: flex;
+  gap: 1em;
+  align-items: flex-start;
+}
+
+.left-column {
+  flex: 1;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border: 1px solid var(--border-color);
+  background: var(--secondary-bg);
+  padding: 1em;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.right-column pre {
+  flex: 1;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .columns {
+    flex-direction: column;
+  }
 }

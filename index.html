@@ -15,6 +15,8 @@
     </div>
   </header>
   <main>
+  <div class="columns">
+  <div class="left-column">
   <ol id="steps">
     <li>
       <h2>1. Select game folder</h2>
@@ -34,10 +36,10 @@
       <div id="folder-feedback"></div>
       <div id="files"></div>
     </li>
-    <li>
-      <h2>2. Review detected configuration</h2>
-      <pre id="current-config">Select a folder to load configuration files.</pre>
-    </li>
+      <li>
+        <h2>2. Review detected configuration</h2>
+        <p>Loaded configuration will appear in the panel on the right.</p>
+      </li>
     <li>
       <h2>3. Enter new master server details</h2>
       <label>URL: <input type="text" id="server-url"></label><br>
@@ -46,12 +48,11 @@
       <label><input type="checkbox" id="include-defaults" checked> Update Default*.ini templates</label>
       <p id="default-help">DefaultEngine.ini and DefaultUI.ini are templates. Updating them keeps your settings even after a reset.</p>
     </li>
-    <li>
-      <h2>4. Apply changes</h2>
-      <div id="files-list"></div>
-      <button id="apply">Apply Changes</button>
-      <pre id="diff"></pre>
-    </li>
+      <li>
+        <h2>4. Apply changes</h2>
+        <div id="files-list"></div>
+        <button id="apply">Apply Changes</button>
+      </li>
     <li>
       <h2>5. Download modified files</h2>
       <div id="downloads"></div>
@@ -67,6 +68,14 @@
       </p>
     </li>
   </ol>
+  </div>
+  <div class="right-column">
+    <h2>Configuration Preview</h2>
+    <pre id="current-config">Select a folder to load configuration files.</pre>
+    <h2>Changes</h2>
+    <pre id="diff"></pre>
+  </div>
+  </div>
   </main>
   <script src="script.js"></script>
 </body>
