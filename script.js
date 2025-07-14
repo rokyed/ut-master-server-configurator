@@ -8,10 +8,29 @@ const advertiseInput = document.getElementById('advertise');
 const applyBtn = document.getElementById('apply');
 const diffPre = document.getElementById('diff');
 const downloadsDiv = document.getElementById('downloads');
+const themeToggleBtn = document.getElementById('theme-toggle');
 
 let fileHandles = {};
 let fileContents = {};
 let updatedContents = {};
+
+function applyTheme(theme) {
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+  themeToggleBtn.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'light';
+  applyTheme(saved);
+}
+
+themeToggleBtn.addEventListener('click', () => {
+  const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+  localStorage.setItem('theme', newTheme);
+  applyTheme(newTheme);
+});
+
+initTheme();
 
 function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
