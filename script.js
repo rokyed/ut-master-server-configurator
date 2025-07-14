@@ -10,6 +10,9 @@ const diffPre = document.getElementById('diff');
 const downloadsDiv = document.getElementById('downloads');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const folderFeedback = document.getElementById('folder-feedback');
+const includeDefaultsInput = document.getElementById('include-defaults');
+const filesListDiv = document.getElementById('files-list');
+const TARGET_FILES = ['UTEngine.ini', 'UTGame.ini', 'DefaultEngine.ini', 'DefaultUI.ini'];
 
 let fileHandles = {};
 let fileContents = {};
@@ -33,6 +36,8 @@ themeToggleBtn.addEventListener('click', () => {
 
 initTheme();
 
+includeDefaultsInput.addEventListener('change', updateFilesList);
+
 function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -40,6 +45,11 @@ function escapeRegex(str) {
 function setFeedback(msg, type) {
   folderFeedback.textContent = msg;
   folderFeedback.className = type;
+}
+
+function updateFilesList() {
+  const names = Object.keys(fileHandles).filter(n => includeDefaultsInput.checked || !n.startsWith('Default'));
+  filesListDiv.textContent = names.length ? `Files to be modified: ${names.join(', ')}` : '';
 }
 
 async function readFile(handle) {
@@ -56,7 +66,7 @@ async function handleDirectory(dirHandle) {
     for await (const [name, entry] of handle.entries()) {
       const current = path ? `${path}/${name}` : name;
       if (entry.kind === 'file') {
-        if (name === 'UTEngine.ini' || name === 'UTGame.ini') {
+        if (TARGET_FILES.includes(name)) {
           fileHandles[name] = entry;
           const text = await readFile(entry);
           fileContents[name] = text;
@@ -85,6 +95,7 @@ async function handleDirectory(dirHandle) {
       .join('\n');
     currentConfigPre.textContent = combined;
   }
+  updateFilesList();
 }
 
 selectFolderBtn.addEventListener('click', async () => {
@@ -107,7 +118,7 @@ folderInput.addEventListener('change', async (e) => {
   updatedContents = {};
   filesDiv.textContent = '';
   for (const file of files) {
-    if (file.name === 'UTEngine.ini' || file.name === 'UTGame.ini') {
+    if (TARGET_FILES.includes(file.name)) {
       const text = await file.text();
       fileHandles[file.name] = file;
       fileContents[file.name] = text;
@@ -125,6 +136,7 @@ folderInput.addEventListener('change', async (e) => {
   } else {
     setFeedback('Error: The selected folder does not contain the required UT3 configuration files. Please make sure you selected the correct game folder.', 'error');
   }
+  updateFilesList();
 });
 
 function validateInputs() {
@@ -152,7 +164,11 @@ function applyChanges() {
     'bAdvertiseServer': advertise
   };
   const diffParts = [];
+  updateFilesList();
   for (const [name, text] of Object.entries(fileContents)) {
+    if (!includeDefaultsInput.checked && name.startsWith('Default')) {
+      continue;
+    }
     const lines = text.split(/\r?\n/);
     const keys = Object.keys(updates);
     const regexes = keys.map(k => new RegExp('^' + escapeRegex(k) + '\\s*=','i'));
