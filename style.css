@@ -114,6 +114,10 @@ button:hover,
   margin: 0.5em 0;
 }
 
+#base-help {
+  margin: 0.5em 0;
+}
+
 .examples {
   margin: 0 0 0.5em 1.2em;
   padding: 0;
