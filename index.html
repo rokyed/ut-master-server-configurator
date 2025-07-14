@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UT3 Master Server Configurator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>UT3 Master Server Configurator</h1>
+  <ol id="steps">
+    <li>
+      <h2>1. Select game folder</h2>
+      <button id="select-folder">Select Folder</button>
+      <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;" />
+      <div id="files"></div>
+    </li>
+    <li>
+      <h2>2. Review detected configuration</h2>
+      <pre id="current-config">Select a folder to load configuration files.</pre>
+    </li>
+    <li>
+      <h2>3. Enter new master server details</h2>
+      <label>URL: <input type="text" id="server-url"></label><br>
+      <label>Port: <input type="number" id="server-port" min="1" max="65535"></label><br>
+      <label><input type="checkbox" id="advertise"> Advertise Server</label>
+    </li>
+    <li>
+      <h2>4. Apply changes</h2>
+      <button id="apply">Apply Changes</button>
+      <pre id="diff"></pre>
+    </li>
+    <li>
+      <h2>5. Download modified files</h2>
+      <div id="downloads"></div>
+    </li>
+    <li>
+      <h2>6. Replace files in your game folder</h2>
+      <p>
+        ✔ Save these files<br>
+        ✔ Navigate to your UT3 install folder<br>
+        ✔ Replace the existing files with the modified versions<br>
+        ✔ Backup originals first!<br>
+        ✔ Start your server as usual
+      </p>
+    </li>
+  </ol>
+  <script src="script.js"></script>
+</body>
+</html>

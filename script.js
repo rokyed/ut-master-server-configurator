@@ -1,0 +1,153 @@
+const selectFolderBtn = document.getElementById('select-folder');
+const folderInput = document.getElementById('folder-input');
+const filesDiv = document.getElementById('files');
+const currentConfigPre = document.getElementById('current-config');
+const serverUrlInput = document.getElementById('server-url');
+const serverPortInput = document.getElementById('server-port');
+const advertiseInput = document.getElementById('advertise');
+const applyBtn = document.getElementById('apply');
+const diffPre = document.getElementById('diff');
+const downloadsDiv = document.getElementById('downloads');
+
+let fileHandles = {};
+let fileContents = {};
+let updatedContents = {};
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function readFile(handle) {
+  const file = await handle.getFile();
+  return await file.text();
+}
+
+async function handleDirectory(dirHandle) {
+  fileHandles = {};
+  fileContents = {};
+  updatedContents = {};
+  filesDiv.textContent = '';
+  for await (const [name, handle] of dirHandle.entries()) {
+    if (name.endsWith('.ini') && (name === 'UTEngine.ini' || name === 'UTGame.ini')) {
+      fileHandles[name] = handle;
+      const text = await readFile(handle);
+      fileContents[name] = text;
+      const div = document.createElement('div');
+      div.textContent = `Loaded ${name}`;
+      filesDiv.appendChild(div);
+    }
+  }
+  if (Object.keys(fileHandles).length === 0) {
+    currentConfigPre.textContent = 'No config files found.';
+  } else {
+    const combined = Object.entries(fileContents)
+      .map(([name, txt]) => `-- ${name} --\n${txt}`)
+      .join('\n');
+    currentConfigPre.textContent = combined;
+  }
+}
+
+selectFolderBtn.addEventListener('click', async () => {
+  if (window.showDirectoryPicker) {
+    try {
+      const dir = await window.showDirectoryPicker();
+      await handleDirectory(dir);
+    } catch (e) {
+      console.error(e);
+    }
+  } else {
+    folderInput.click();
+  }
+});
+
+folderInput.addEventListener('change', async (e) => {
+  const files = e.target.files;
+  fileHandles = {};
+  fileContents = {};
+  updatedContents = {};
+  filesDiv.textContent = '';
+  for (const file of files) {
+    if (file.name === 'UTEngine.ini' || file.name === 'UTGame.ini') {
+      const text = await file.text();
+      fileHandles[file.name] = file;
+      fileContents[file.name] = text;
+      const div = document.createElement('div');
+      div.textContent = `Loaded ${file.webkitRelativePath}`;
+      filesDiv.appendChild(div);
+    }
+  }
+  const combined = Object.entries(fileContents)
+    .map(([name, txt]) => `-- ${name} --\n${txt}`)
+    .join('\n');
+  currentConfigPre.textContent = combined || 'No config files found.';
+});
+
+function validateInputs() {
+  const url = serverUrlInput.value.trim();
+  const port = parseInt(serverPortInput.value, 10);
+  if (!/^https?:\/\//i.test(url)) {
+    alert('Please enter a valid URL (must start with http:// or https://)');
+    return false;
+  }
+  if (isNaN(port) || port < 1 || port > 65535) {
+    alert('Please enter a valid port between 1 and 65535');
+    return false;
+  }
+  return true;
+}
+
+function applyChanges() {
+  updatedContents = {};
+  const url = serverUrlInput.value.trim();
+  const port = serverPortInput.value.trim();
+  const advertise = advertiseInput.checked ? 'True' : 'False';
+  const updates = {
+    'MasterServerURL': url,
+    'MasterServerPort': port,
+    'bAdvertiseServer': advertise
+  };
+  const diffParts = [];
+  for (const [name, text] of Object.entries(fileContents)) {
+    const lines = text.split(/\r?\n/);
+    const keys = Object.keys(updates);
+    const regexes = keys.map(k => new RegExp('^' + escapeRegex(k) + '\\s*=','i'));
+    const updated = new Set();
+    for (let i = 0; i < lines.length; i++) {
+      for (let j = 0; j < keys.length; j++) {
+        if (regexes[j].test(lines[i])) {
+          diffParts.push(`${name}: ${lines[i]} -> ${keys[j]}=${updates[keys[j]]}`);
+          lines[i] = `${keys[j]}=${updates[keys[j]]}`;
+          updated.add(keys[j]);
+        }
+      }
+    }
+    keys.forEach(k => {
+      if (!updated.has(k)) {
+        diffParts.push(`${name}: add ${k}=${updates[k]}`);
+        lines.push(`${k}=${updates[k]}`);
+      }
+    });
+    updatedContents[name] = lines.join('\n');
+  }
+  diffPre.textContent = diffParts.join('\n');
+  downloadsDiv.innerHTML = '';
+  for (const [name, txt] of Object.entries(updatedContents)) {
+    const blob = new Blob([txt], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.textContent = `Download ${name}`;
+    a.style.display = 'block';
+    downloadsDiv.appendChild(a);
+  }
+}
+
+applyBtn.addEventListener('click', () => {
+  if (!validateInputs()) return;
+  if (Object.keys(fileContents).length === 0) {
+    alert('No configuration files loaded.');
+    return;
+  }
+  applyChanges();
+});
