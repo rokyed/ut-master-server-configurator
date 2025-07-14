@@ -9,6 +9,7 @@ const applyBtn = document.getElementById('apply');
 const diffPre = document.getElementById('diff');
 const downloadsDiv = document.getElementById('downloads');
 const themeToggleBtn = document.getElementById('theme-toggle');
+const folderFeedback = document.getElementById('folder-feedback');
 
 let fileHandles = {};
 let fileContents = {};
@@ -36,6 +37,11 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function setFeedback(msg, type) {
+  folderFeedback.textContent = msg;
+  folderFeedback.className = type;
+}
+
 async function readFile(handle) {
   const file = await handle.getFile();
   return await file.text();
@@ -46,15 +52,30 @@ async function handleDirectory(dirHandle) {
   fileContents = {};
   updatedContents = {};
   filesDiv.textContent = '';
-  for await (const [name, handle] of dirHandle.entries()) {
-    if (name.endsWith('.ini') && (name === 'UTEngine.ini' || name === 'UTGame.ini')) {
-      fileHandles[name] = handle;
-      const text = await readFile(handle);
-      fileContents[name] = text;
-      const div = document.createElement('div');
-      div.textContent = `Loaded ${name}`;
-      filesDiv.appendChild(div);
+  async function traverse(handle, path) {
+    for await (const [name, entry] of handle.entries()) {
+      const current = path ? `${path}/${name}` : name;
+      if (entry.kind === 'file') {
+        if (name === 'UTEngine.ini' || name === 'UTGame.ini') {
+          fileHandles[name] = entry;
+          const text = await readFile(entry);
+          fileContents[name] = text;
+          const div = document.createElement('div');
+          div.textContent = `Loaded ${current}`;
+          filesDiv.appendChild(div);
+        }
+      } else if (entry.kind === 'directory') {
+        await traverse(entry, current);
+      }
     }
+  }
+
+  await traverse(dirHandle, '');
+
+  if (fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini']) {
+    setFeedback('Success: Valid UT3 installation detected. Configuration files loaded.', 'success');
+  } else {
+    setFeedback('Error: The selected folder does not appear to contain the required UT3 configuration files. Please make sure you selected the correct game folder.', 'error');
   }
   if (Object.keys(fileHandles).length === 0) {
     currentConfigPre.textContent = 'No config files found.';
@@ -99,6 +120,11 @@ folderInput.addEventListener('change', async (e) => {
     .map(([name, txt]) => `-- ${name} --\n${txt}`)
     .join('\n');
   currentConfigPre.textContent = combined || 'No config files found.';
+  if (fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini']) {
+    setFeedback('Success: Valid UT3 installation detected. Configuration files loaded.', 'success');
+  } else {
+    setFeedback('Error: The selected folder does not contain the required UT3 configuration files. Please make sure you selected the correct game folder.', 'error');
+  }
 });
 
 function validateInputs() {
