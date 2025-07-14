@@ -82,10 +82,12 @@ async function handleDirectory(dirHandle) {
 
   await traverse(dirHandle, '');
 
-  if (fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini']) {
-    setFeedback('Success: Valid UT3 installation detected. Configuration files loaded.', 'success');
+  const hasActive = fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini'];
+  const hasDefault = fileHandles['DefaultEngine.ini'] && fileHandles['DefaultUI.ini'];
+  if (hasActive || hasDefault) {
+    setFeedback('Success: UT3 configuration files loaded.', 'success');
   } else {
-    setFeedback('Error: The selected folder does not appear to contain the required UT3 configuration files. Please make sure you selected the correct game folder.', 'error');
+    setFeedback('Error: No UT3 configuration files were found. Please select your game install or user config folder.', 'error');
   }
   if (Object.keys(fileHandles).length === 0) {
     currentConfigPre.textContent = 'No config files found.';
@@ -131,10 +133,12 @@ folderInput.addEventListener('change', async (e) => {
     .map(([name, txt]) => `-- ${name} --\n${txt}`)
     .join('\n');
   currentConfigPre.textContent = combined || 'No config files found.';
-  if (fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini']) {
-    setFeedback('Success: Valid UT3 installation detected. Configuration files loaded.', 'success');
+  const hasActive = fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini'];
+  const hasDefault = fileHandles['DefaultEngine.ini'] && fileHandles['DefaultUI.ini'];
+  if (hasActive || hasDefault) {
+    setFeedback('Success: UT3 configuration files loaded.', 'success');
   } else {
-    setFeedback('Error: The selected folder does not contain the required UT3 configuration files. Please make sure you selected the correct game folder.', 'error');
+    setFeedback('Error: No UT3 configuration files were found. Please select your game install or user config folder.', 'error');
   }
   updateFilesList();
 });

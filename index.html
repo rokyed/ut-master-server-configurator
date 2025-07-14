@@ -21,15 +21,16 @@
     <li>
       <h2>1. Select game folder</h2>
       <p id="folder-help">
-        Please select your <strong>Unreal Tournament 3</strong> installation or config folder. This folder must contain the
-        <code>UTGame</code> subfolder with configuration files like <code>UTEngine.ini</code> and
-        <code>UTGame.ini</code>. <br>
+        Select either your <strong>Unreal Tournament 3</strong> game installation folder (with default configs)
+        or your user config folder (with active game configs). The app will adjust whichever files it finds.
+        <br>
         <em>DefaultEngine.ini</em> and <em>DefaultUI.ini</em> will also be updated if present.
       </p>
       <ul class="examples">
-        <li><strong>Windows Retail:</strong>&nbsp;<code>C:\Program Files (x86)\Unreal Tournament 3</code></li>
-        <li><strong>Steam (Windows):</strong>&nbsp;<code>C:\Program Files (x86)\Steam\steamapps\common\Unreal Tournament 3</code></li>
-        <li><strong>Linux (Steam/Proton):</strong>&nbsp;<code>/steamapps/compatdata/13210/pfx/drive_c/users/steamuser/My Documents/My Games/Unreal Tournament 3</code></li>
+        <li><strong>Game Install (Windows):</strong>&nbsp;<code>C:\Program Files (x86)\Unreal Tournament 3</code></li>
+        <li><strong>Game Install (Steam):</strong>&nbsp;<code>C:\Program Files (x86)\Steam\steamapps\common\Unreal Tournament 3</code></li>
+        <li><strong>User Config (Windows):</strong>&nbsp;<code>%USERPROFILE%\Documents\My Games\Unreal Tournament 3</code></li>
+        <li><strong>User Config (Steam/Proton):</strong>&nbsp;<code>/steamapps/compatdata/13230/pfx/drive_c/users/steamuser/My Documents/My Games/Unreal Tournament 3</code></li>
       </ul>
       <button id="select-folder">Select Folder</button>
       <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;" />
