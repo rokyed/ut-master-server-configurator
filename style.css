@@ -94,3 +94,30 @@ button:hover,
     margin-top: 0.5em;
   }
 }
+
+/* Guidance styles */
+#folder-help {
+  margin: 0.5em 0;
+}
+
+.examples {
+  margin: 0 0 0.5em 1.2em;
+  padding: 0;
+}
+
+.examples li {
+  list-style: disc;
+}
+
+#folder-feedback {
+  margin-top: 0.5em;
+  font-weight: bold;
+}
+
+#folder-feedback.success {
+  color: green;
+}
+
+#folder-feedback.error {
+  color: red;
+}

@@ -18,8 +18,19 @@
   <ol id="steps">
     <li>
       <h2>1. Select game folder</h2>
+      <p id="folder-help">
+        Select your <strong>Unreal Tournament 3</strong> installation folder. This folder must contain the
+        <code>UTGame</code> subfolder with the configuration files <code>UTEngine.ini</code> and
+        <code>UTGame.ini</code>.
+      </p>
+      <ul class="examples">
+        <li>Windows:&nbsp;<code>C:\Program Files (x86)\Unreal Tournament 3</code></li>
+        <li>Steam:&nbsp;<code>C:\Program Files (x86)\Steam\steamapps\common\Unreal Tournament 3</code></li>
+        <li>macOS/Linux:&nbsp;<code>~/Games/UnrealTournament3</code></li>
+      </ul>
       <button id="select-folder">Select Folder</button>
       <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;" />
+      <div id="folder-feedback"></div>
       <div id="files"></div>
     </li>
     <li>
