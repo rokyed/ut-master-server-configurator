@@ -12,7 +12,14 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const folderFeedback = document.getElementById('folder-feedback');
 const includeDefaultsInput = document.getElementById('include-defaults');
 const filesListDiv = document.getElementById('files-list');
-const TARGET_FILES = ['UTEngine.ini', 'UTGame.ini', 'DefaultEngine.ini', 'DefaultUI.ini'];
+const TARGET_FILES = [
+  'UTEngine.ini',
+  'UTGame.ini',
+  'DefaultEngine.ini',
+  'DefaultUI.ini',
+  'BaseEngine.ini',
+  'BaseUI.ini'
+];
 
 let fileHandles = {};
 let fileContents = {};
@@ -48,8 +55,12 @@ function setFeedback(msg, type) {
 }
 
 function updateFilesList() {
-  const names = Object.keys(fileHandles).filter(n => includeDefaultsInput.checked || !n.startsWith('Default'));
-  filesListDiv.textContent = names.length ? `Files to be modified: ${names.join(', ')}` : '';
+  const names = Object.keys(fileHandles).filter(
+    n => includeDefaultsInput.checked || !n.startsWith('Default')
+  );
+  filesListDiv.textContent = names.length
+    ? `The following config files will be updated with your new master server settings: ${names.join(', ')}`
+    : '';
 }
 
 async function readFile(handle) {
@@ -84,7 +95,8 @@ async function handleDirectory(dirHandle) {
 
   const hasActive = fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini'];
   const hasDefault = fileHandles['DefaultEngine.ini'] && fileHandles['DefaultUI.ini'];
-  if (hasActive || hasDefault) {
+  const hasBase = fileHandles['BaseEngine.ini'] && fileHandles['BaseUI.ini'];
+  if (hasActive || hasDefault || hasBase) {
     setFeedback('Success: UT3 configuration files loaded.', 'success');
   } else {
     setFeedback('Error: No UT3 configuration files were found. Please select your game install or user config folder.', 'error');
@@ -135,7 +147,8 @@ folderInput.addEventListener('change', async (e) => {
   currentConfigPre.textContent = combined || 'No config files found.';
   const hasActive = fileHandles['UTEngine.ini'] && fileHandles['UTGame.ini'];
   const hasDefault = fileHandles['DefaultEngine.ini'] && fileHandles['DefaultUI.ini'];
-  if (hasActive || hasDefault) {
+  const hasBase = fileHandles['BaseEngine.ini'] && fileHandles['BaseUI.ini'];
+  if (hasActive || hasDefault || hasBase) {
     setFeedback('Success: UT3 configuration files loaded.', 'success');
   } else {
     setFeedback('Error: No UT3 configuration files were found. Please select your game install or user config folder.', 'error');

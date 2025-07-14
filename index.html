@@ -24,7 +24,7 @@
         Select either your <strong>Unreal Tournament 3</strong> game installation folder (with default configs)
         or your user config folder (with active game configs). The app will adjust whichever files it finds.
         <br>
-        <em>DefaultEngine.ini</em> and <em>DefaultUI.ini</em> will also be updated if present.
+        <em>DefaultEngine.ini</em>, <em>DefaultUI.ini</em>, <em>BaseEngine.ini</em>, and <em>BaseUI.ini</em> will also be updated if present.
       </p>
       <ul class="examples">
         <li><strong>Game Install (Windows):</strong>&nbsp;<code>C:\Program Files (x86)\Unreal Tournament 3</code></li>
@@ -48,6 +48,7 @@
       <label><input type="checkbox" id="advertise"> Advertise Server</label><br>
       <label><input type="checkbox" id="include-defaults" checked> Update Default*.ini templates</label>
       <p id="default-help">DefaultEngine.ini and DefaultUI.ini are templates. Updating them keeps your settings even after a reset.</p>
+      <p id="base-help">Base*.ini files are part of the game's config hierarchy. Updating them ensures the settings are consistent even if configs are reset or re-generated.</p>
     </li>
       <li>
         <h2>4. Apply changes</h2>

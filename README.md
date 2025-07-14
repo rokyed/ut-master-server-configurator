@@ -6,8 +6,8 @@ This project provides a static web page to help you update your Unreal Tournamen
 
 1. Open `index.html` in a modern browser or visit the GitHub Pages site after deployment.
 2. Select your local UT3 **installation folder** or your **user config folder** when prompted.
-   The app automatically detects `UTEngine.ini`/`UTGame.ini` or `DefaultEngine.ini`/`DefaultUI.ini`
-   and updates whichever files are present.
+   The app automatically detects `UTEngine.ini`/`UTGame.ini`, `DefaultEngine.ini`/`DefaultUI.ini`,
+   and `BaseEngine.ini`/`BaseUI.ini` and updates whichever files are present.
    Example paths:
    - **Game Install (Windows):** `C:\Program Files (x86)\Unreal Tournament 3`
    - **Game Install (Steam):** `C:\Program Files (x86)\Steam\steamapps\common\Unreal Tournament 3`
